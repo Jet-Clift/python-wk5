@@ -1,6 +1,6 @@
 """Server for movie ratings app."""
 
-from flask import (Flask, render_template, request, flash, session, redirect)
+from flask import Flask, render_template, request, flash, session, redirect
 from model import connect_to_db, db
 import crud
 
@@ -20,7 +20,7 @@ def homepage():
 def all_movies():
     """View all movies."""
     
-    movies = crud.get_movies()
+    movies = crud.get_movie()
 
     return render_template("all_movies.html", movies=movies)
 
@@ -31,17 +31,17 @@ def show_movie(movie_id):
 
     return render_template("movie_details.html", movie=movie)
 
-@app.route("/users", methods=["GET"])
+@app.route("/users")
 def all_users():
     """View all users."""
     users = crud.get_users()
-    return render_template("users.html", users=users)
+    return render_template("all_users.html", users=users)
 
 @app.route("/users", methods=["POST"])
 def register_user():
     """Creates a new user."""
-    new_email = request.form["email"]
-    new_password = request.form["password"]
+    new_email = request.form.get("email")
+    new_password = request.form.get("password")
 
     user = crud.get_user_by_email(new_email)
 
@@ -60,21 +60,21 @@ def register_user():
 def show_user(user_id):
     """Show details on a particular user."""
     user = crud.get_user_by_id(user_id)
-    return render_template("user_profile.html", user=user)
+    
+    return render_template("user_details.html", user=user)
 
 @app.route("/login", methods=["POST"])
 def login():
-    email = request.form["email"]
-    password = request.form["password"]
+    email = request.form.get("email")
+    password = request.form.get("password")
 
     user = crud.get_user_by_email(email)
-
     if user:
         session["user_email"] = user.email
         flash(f"Successfully logged in as {user.email}.")
     else:
         flash("This email is not registered.")
-    redirect("/")
+    return redirect("/")
 
 @app.route("/rating/<movie_id>", methods=["POST"])
 def rate_movie(movie_id):
@@ -85,6 +85,7 @@ def rate_movie(movie_id):
     new_rating = crud.create_rating(user, movie, score)
     db.session.add(new_rating)
     db.session.commit()
+    flash("Movie Rated!")
     return redirect(f"/movies/{movie.movie_id}")
 
 

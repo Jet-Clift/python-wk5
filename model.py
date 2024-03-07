@@ -3,7 +3,6 @@
 import os
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-
 db = SQLAlchemy()
 
 
@@ -31,7 +30,7 @@ class Movie(db.Model):
     poster_path = db.Column(db.String)
 
     def __repr__(self):
-        return f"<Movie movie_id={self.movie_id} = title={self.title}>"
+        return f"<Movie movie_id={self.movie_id} title={self.title}>"
 
 class Rating(db.Model):
     """A movie rating."""
@@ -62,9 +61,4 @@ def connect_to_db(flask_app, echo=False):
 
 if __name__ == "__main__":
     from server import app
-
-    # Call connect_to_db(app, echo=False) if your program output gets
-    # too annoying; this will tell SQLAlchemy not to print out every
-    # query it executes.
-
     connect_to_db(app)

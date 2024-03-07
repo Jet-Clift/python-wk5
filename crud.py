@@ -18,7 +18,7 @@ def create_movie(title, overview, release_date, poster_path):
     return new_movie
 
 def create_rating(user, movie, score):
-    """Creates a new rating oxject and returns it."""
+    """Creates a new rating object and returns it."""
     new_rating = Rating(user=user, movie=movie, score=score)
     return new_rating
 
@@ -43,7 +43,7 @@ def get_user_by_id(user_id):
 
 def get_user_by_email(email):
     """Gets a user object from database via email and returns."""
-    return User.query.filter_by(email=email).first()
+    return User.query.filter(User.email == email).first()
 
 if __name__ == "__main__":
     from server import app
